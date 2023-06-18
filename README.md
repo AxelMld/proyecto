@@ -99,4 +99,4 @@ else{
 ```
 
 ## CONEXION 
-![](https://github.com/AxelMld/proyecto/blob/main/conexion.png?raw=true)
+![](https://github.com/AxelMld/proyecto/blob/main/conex%202.png?raw=true)
