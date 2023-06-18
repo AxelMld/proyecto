@@ -1,66 +1,102 @@
 
-#define I2C_ADDR    0x27
 
-const int Trigger = 12;  //sisterna
-const int Echo = 13;   //sisterna 
-const int Trigger2 = 2;   //tinaco
-const int Echo2 = 15;    //tinaco 
+# PROYECTO DE DIPLOMADO AUTOMATIZACION LLENADO DE UN TINACO 
+
+
+## CODIGO 
+
+```
+// Se declaran las variables a utilizar  
+const int Trig_sisterna = 12; //sisterna 
+const int Echo_sisterna = 13; //sisterna 
+const int Trig_tinaco = 2; //tinaco 
+const int Echo_sisterna_tinaco = 15; //tinaco
 int ledPin = 14; // Pin del LED
-
-
+int btn = 23;
 
 void setup() {
 
-  Serial.begin(9600);//iniciailzamos la comunicación
-  pinMode(ledPin, OUTPUT);
-  pinMode(Trigger, OUTPUT); //pin como salida
-  pinMode(Echo, INPUT);  //pin como entrada
-  pinMode(Trigger2, OUTPUT); //pin como salida
-  pinMode(Echo2, INPUT);  //pin como entrada
-  digitalWrite(Trigger, LOW);//Inicializamos el pin con 0
-  digitalWrite(Trigger2, LOW);//Inicializamos el pin con 0
+// Se define el modo del pin a utilizar 
+
+Serial.begin(9600); //iniciailzamos la comunicación 
+pinMode(ledPin, OUTPUT);
+pinMode (Trig_sisterna, OUTPUT); //pin como salida
+pinMode(Echo_sisterna, INPUT); //pin como entrada 
+pinMode(Trig_tinaco, OUTPUT); //pin como salida
+pinMode(Echo_sisterna_tinaco, INPUT); //pin como entrada
+digitalWrite (Trig_sisterna, LOW);//Inicializamos el pin con 0 
+digitalWrite(Trig_tinaco, LOW);//Inicializamos el pin con 0
+pinMode(btn, INPUT_PULLUP);
 
 }
 
-void loop()
-{
+void loop() {
 
-  long tsis; //timepo que demora en llegar el heco
-  long dsis; //distancia en centimetros
+long t_sisterna; //timepo que demora en llegar el hecho 
+long d_sisterna; //terna/distancia en centimetros
 
-  long t2; //timepo que demora en llegar el heco
-  long d2; //distancia en centimetros
+long t_tinaco; //timepo que demora en llegar el hecho
+long d_tinaco; //distancia en centimetros
+
+// Tiempo se envio de señal 
+
+//Para el primer sensor 
+
+digitalWrite (Trig_sisterna, HIGH); 
+delayMicroseconds(10); //Enviamos un pulso de 10us
+digitalWrite (Trig_sisterna, LOW);
+
+//para segundo sensor
+digitalWrite(Trig_tinaco, HIGH); 
+delayMicroseconds(10); //Enviamos un pulso de 10us
+digitalWrite(Trig_tinaco, LOW);
+
+t_sisterna = pulseIn(Echo_sisterna, HIGH); //obtenemos el ancho del pulso 
+d_sisterna = t_sisterna/59; //escalamos el tiempo a una distancia en cm
+t_tinaco = pulseIn(Echo_sisterna_tinaco, HIGH); //obtenemos el ancho del pulso 
+d_tinaco = t_tinaco/59; //escalamos el tiempo a una distancia en cm
 
 
+// si la sisterna esta llena y el tinaco vacio se prende bomba 
+// 0| 0
+if (d_sisterna<=200 && d_tinaco<=200){
+  digitalWrite (ledPin , 0); 
+}
 
-  digitalWrite(Trigger, HIGH);
-  delayMicroseconds(10);          //Enviamos un pulso de 10us
-  digitalWrite(Trigger, LOW);
+// si la sisterna esta vacia y el tinaco vacio no se prende la bomba
+// 0|1
+else if (d_sisterna<=200 && d_tinaco>=200){
+  digitalWrite(ledPin, 0);  
 
-  //para segundo sensor 
+}
 
-  digitalWrite(Trigger2, HIGH);
-  delayMicroseconds(10);          //Enviamos un pulso de 10us
-  digitalWrite(Trigger2, LOW);
-  
-  tsis = pulseIn(Echo, HIGH); //obtenemos el ancho del pulso
-  dsis = tsis/59;             //escalamos el tiempo a una distancia en cm
+// si la sisterna esta vacio y el tinaco lleno no se prende la bomba
+// 1|0
+else if (d_sisterna>=200 && d_tinaco<=200){
+  digitalWrite(ledPin, 1);  
+}
 
-  t2 = pulseIn(Echo2, HIGH); //obtenemos el ancho del pulso
-  d2 = t2/59;             //escalamos el tiempo a una distancia en cm
-  
- if (dsis > 200 && d2 <100){
-        digitalWrite (ledPin , HIGH);     //Si el sensor detecta una distancia menor a 20 cm enciende el LED Rojo
-      
-    }
+  // si la sisterna esta llena y la tinaco esta lleno no se prende la bomba 
+  //1|1
+else if (d_sisterna>=200 && d_tinaco>=200){
+  digitalWrite(ledPin, 0);
 
-  else if ()
+}
+
+  // si se apreta el boton se apaga 
+else if (digitalRead(btn) == 0){
+  digitalWrite(ledPin, 1);
+
+}
+
+else{
+  digitalWrite(ledPin,0);
+}
 
 
 }
 
+```
 
-
-![](https://github.com/AxelMld/proyecto/blob/main/conexion.png?raw=true)
-
-
+## CONEXION 
+![]()
