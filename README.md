@@ -178,4 +178,4 @@ void loop() {
 ```
 
 ## CONEXION 
-![](https://github.com/AxelMld/proyecto/blob/main/conex%202.png?raw=true)
+![](https://github.com/AxelMld/proyecto/blob/main/conex.png?raw=true)
